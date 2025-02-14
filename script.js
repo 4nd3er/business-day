@@ -14,7 +14,7 @@ const positionCharacter = (relativePosition) => {
         setTimeout(() => {
             animationSection.classList.add("ocultar");
         }, 900);
-    } else if (relativePosition >= 0.11960742081004634 && relativePosition < 0.15960742081004635) {
+    } else if (relativePosition >= 0.04907562917231037 && relativePosition < 0.05907562917231037) {
         stations.forEach((station, index) => {
             setTimeout(() => {
                 station.style.bottom = "13rem";
@@ -45,6 +45,26 @@ for (let i = 1; i <= 15; i++) {
     } else if (i >= 2) {
         div.classList.add("sendero");
     }
+    if (i >= 8 && i < 11) {
+        for (let j = 3; j < 10; j++) {
+            const div = document.createElement("div");
+            div.classList.add("sendero");
+            div.style = `
+                min-width: calc(1920px / 3);
+                height: 100vh;
+                position: relative;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: url(/img/N${j}.png);
+                background-size: 100% 100%;
+                background-position: center;
+                background-repeat: no-repeat;
+                overflow: visible;
+            `;
+            container.appendChild(div);
+        }
+    }
     div.style = `
     min-width: calc(1920px / 3);
     height: 100vh;
@@ -62,7 +82,7 @@ for (let i = 1; i <= 15; i++) {
     animationSection = document.querySelector(".section-2");
 }
 
-for (i = 1; i < 47; i++) {
+for (i = 1; i < 150; i++) {
     const div = document.createElement("div");
     div.classList.add("stations");
     div.style = `
