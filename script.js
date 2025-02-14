@@ -5,7 +5,33 @@ let sectionWidth = window.innerWidth;
 let eventDeltaY = 0;
 let lastScrollTime = 0;
 let intervalScroll;
-let animationSection
+let animationSection;
+let stations = [];
+
+const positionCharacter = (relativePosition) => {
+    if (relativePosition >= 0.07 && relativePosition < 0.10) {
+        animationSection.classList.add("animation");
+        setTimeout(() => {
+            animationSection.classList.add("ocultar");
+        }, 900);
+    } else if (relativePosition >= 0.11960742081004634 && relativePosition < 0.15960742081004635) {
+        stations.forEach((station, index) => {
+            setTimeout(() => {
+                station.style.bottom = "13rem";
+            }, index * 150);
+        })
+    } else if (relativePosition < 0.7661505013801799) {
+        character.style.bottom = "22%";
+    } else if (relativePosition >= 0.7661505013801799 && relativePosition < 0.7745256163951745) {
+        character.style.bottom = "17.2%";
+    } else if (relativePosition >= 0.7745256163951745 && relativePosition < 0.8239040561954744) {
+        character.style.bottom = "11%";
+    } else if (relativePosition >= 0.8239040561954744 && relativePosition < 0.895877883894493) {
+        character.style.bottom = "21.5%";
+    } else if (relativePosition >= 0.895877883894493) {
+        character.style.bottom = "11%";
+    }
+};
 
 for (let i = 1; i <= 15; i++) {
     const div = document.createElement("div");
@@ -36,7 +62,37 @@ for (let i = 1; i <= 15; i++) {
     animationSection = document.querySelector(".section-2");
 }
 
+for (i = 1; i < 47; i++) {
+    const div = document.createElement("div");
+    div.classList.add("stations");
+    div.style = `
+    min-width: calc(1920px / 3);
+    height: 100%;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url(/img/stations/N-${i}.png);
+    background-size: 8rem 10rem;
+    background-position: bottom;
+    background-repeat: no-repeat;
+    overflow: visible;
+    left: calc(52rem + ${i * 8}rem);
+    bottom: 0%;
+    `;
+    container.appendChild(div);
+    stations = document.querySelectorAll(".stations");
+}
+
 window.addEventListener("touchstart", (event) => {
+    const currentScroll = container.scrollLeft; // Scroll horizontal dentro del contenedor
+    const containerWidth = container.offsetWidth; // Ancho visible del contenedor
+    const totalWidth = container.scrollWidth; // Ancho total del contenido del contenedor
+
+    const relativePosition = currentScroll / (totalWidth - containerWidth);
+
+    positionCharacter(relativePosition);
+
     character.style.animation = "walk 0.7s steps(4) infinite";
     lastScroll = event.touches[0].clientX.toFixed(0);
 });
@@ -46,8 +102,9 @@ window.addEventListener("touchmove", (event) => {
     const containerWidth = container.offsetWidth; // Ancho visible del contenedor
     const totalWidth = container.scrollWidth; // Ancho total del contenido del contenedor
 
-    // Calcular la posición relativa del sprite (valor entre 0 y 1)
     const relativePosition = currentScroll / (totalWidth - containerWidth);
+
+    positionCharacter(relativePosition);
 
     // Mostrar la posición relativa en la consola
     console.log(relativePosition);
@@ -59,26 +116,18 @@ window.addEventListener("touchmove", (event) => {
         character.style.transform = 'scaleX(1) translateX(0)';
     }
     lastScroll = event.touches[0].clientX.toFixed(0);
-
-    if (relativePosition >= 0.07 && relativePosition < 0.10) {
-        animationSection.classList.add("animation");
-        setTimeout(() => {
-            animationSection.classList.add("ocultar");
-        }, 900);
-    } else if (relativePosition < 0.7661505013801799) {
-        character.style.bottom = "22%";
-    } else if (relativePosition >= 0.7661505013801799 && relativePosition < 0.7745256163951745) {
-        character.style.bottom = "17.2%";
-    } else if (relativePosition >= 0.7745256163951745 && relativePosition < 0.8239040561954744) {
-        character.style.bottom = "11%";
-    } else if (relativePosition >= 0.8239040561954744) {
-        character.style.bottom = "21.5%";
-    }
 });
 
 window.addEventListener("touchend", () => {
+    const currentScroll = container.scrollLeft; // Scroll horizontal dentro del contenedor
+    const containerWidth = container.offsetWidth; // Ancho visible del contenedor
+    const totalWidth = container.scrollWidth; // Ancho total del contenido del contenedor
+    const relativePosition = currentScroll / (totalWidth - containerWidth);
+
     isScrolling = false;
     character.style.animation = "none";
+
+    positionCharacter(relativePosition);
 });
 
 window.addEventListener("resize", () => {
@@ -101,11 +150,6 @@ window.addEventListener("wheel", (event) => {
     scrollPosition = Math.max(0, Math.min(scrollPosition, sectionWidth / 3));
     // Mover solo el fondo (no el personaje)
     container.style.transform = `translateX(-${scrollPosition}px)`;
-
-    console.log(sectionWidth);
-
-    // console.log(((container.clientWidth / 4) * 3) - 200);
-    console.log(scrollPosition);
 
     if (scrollPosition > ((container.clientWidth / 4) * 3) - 200) {
         character.style.bottom = "15%";
